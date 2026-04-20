@@ -1,40 +1,62 @@
 @use 'variables' as v;
 
+// ─────────────────────────────────────────────────────────────────
+// CyberShield exact values (translated from Tailwind utilities):
+//
+//  glassmorphism  = bg-card/40 backdrop-blur-md border
+//                 → background: rgba(26,10,46, 0.40)   (card=#1a0a2e)
+//                   backdrop-filter: blur(12px)
+//                   border: 1px solid rgba(0,255,153,0.2)
+//
+//  glow-border    = border border-primary shadow-lg
+//                 → border: 1px solid #00ff99
+//                   box-shadow: 0 10px 15px -3px rgba(0,0,0,.1),
+//                               0 4px 6px -2px rgba(0,0,0,.05)
+//
+//  card panel     (join page) = bg-card/50 border-2 border-primary/30 rounded-2xl
+//                 → background: rgba(26,10,46, 0.50)
+//                   border: 2px solid rgba(0,255,153,0.30)
+//                   border-radius: 1rem
+// ─────────────────────────────────────────────────────────────────
+
+@mixin glassmorphism {
+  background: rgba(26, 10, 46, 0.40);   // bg-card/40
+  backdrop-filter: blur(12px);           // backdrop-blur-md
+  border: 1px solid rgba(0,255,153,0.20);
+}
+
+@mixin glow-border {
+  border: 1px solid #00ff99;             // border-primary
+  box-shadow:
+    0 10px 15px -3px rgba(0,0,0,0.2),
+    0 4px  6px -2px rgba(0,0,0,0.15);
+}
+
+@mixin card-panel {
+  background: rgba(26, 10, 46, 0.50);   // bg-card/50
+  border: 2px solid rgba(0,255,153,0.30);
+  border-radius: 1rem;                   // rounded-2xl
+}
+
+// Generic gy-card = glassmorphism + glow-border + hover neon glow
 @mixin gy-card {
-  border-radius: v.$radius-xl;
-  background: linear-gradient(135deg, rgba(0, 255, 153, 0.04), rgba(0, 255, 255, 0.02)), v.$glass;
-  backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid v.$glass-border;
-  padding: 1.75rem;
+  @include glassmorphism;
+  border: 1px solid #00ff99;
+  border-radius: 0.75rem;               // rounded-xl
+  padding: 2rem;                        // p-8
   position: relative;
   overflow: hidden;
   box-shadow:
-    0 10px 40px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(0, 255, 153, 0.06);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  animation: gy-fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    padding: 1px;
-    border-radius: inherit;
-    background: linear-gradient(135deg, rgba(0, 255, 153, 0.15), transparent 40%, rgba(0, 255, 255, 0.07));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-  }
+    0 10px 15px -3px rgba(0,0,0,0.3),
+    0  4px  6px -2px rgba(0,0,0,0.2);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  animation: gy-fade-up 0.4s ease;
 
   &:hover {
-    transform: translateY(-6px) scale(1.01);
+    border-color: rgba(0,255,255,0.6);   // hover:border-accent
     box-shadow:
-      0 20px 50px rgba(0, 0, 0, 0.7),
-      0 0 25px rgba(0, 255, 153, 0.2),
-      0 0 50px rgba(0, 255, 255, 0.1);
-    border-color: rgba(0, 255, 153, 0.4);
+      0 20px 40px rgba(0,0,0,0.5),
+      0  0  25px rgba(0,255,153,0.25);
   }
 }
 
