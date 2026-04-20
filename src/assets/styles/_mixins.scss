@@ -1,73 +1,10 @@
-@use 'variables' as v;
-
-// ─────────────────────────────────────────────────────────────────
-// CyberShield exact values (translated from Tailwind utilities):
-//
-//  glassmorphism  = bg-card/40 backdrop-blur-md border
-//                 → background: rgba(26,10,46, 0.40)   (card=#1a0a2e)
-//                   backdrop-filter: blur(12px)
-//                   border: 1px solid rgba(0,255,153,0.2)
-//
-//  glow-border    = border border-primary shadow-lg
-//                 → border: 1px solid #00ff99
-//                   box-shadow: 0 10px 15px -3px rgba(0,0,0,.1),
-//                               0 4px 6px -2px rgba(0,0,0,.05)
-//
-//  card panel     (join page) = bg-card/50 border-2 border-primary/30 rounded-2xl
-//                 → background: rgba(26,10,46, 0.50)
-//                   border: 2px solid rgba(0,255,153,0.30)
-//                   border-radius: 1rem
-// ─────────────────────────────────────────────────────────────────
-
-@mixin glassmorphism {
-  background: rgba(26, 10, 46, 0.40);   // bg-card/40
-  backdrop-filter: blur(12px);           // backdrop-blur-md
-  border: 1px solid rgba(0,255,153,0.20);
-}
-
-@mixin glow-border {
-  border: 1px solid #00ff99;             // border-primary
-  box-shadow:
-    0 10px 15px -3px rgba(0,0,0,0.2),
-    0 4px  6px -2px rgba(0,0,0,0.15);
-}
-
-@mixin card-panel {
-  background: rgba(26, 10, 46, 0.50);   // bg-card/50
-  border: 2px solid rgba(0,255,153,0.30);
-  border-radius: 1rem;                   // rounded-2xl
-}
-
-// Generic gy-card = glassmorphism + glow-border + hover neon glow
+// Clean flat card mixin (no glassmorphism)
 @mixin gy-card {
-  @include glassmorphism;
-  border: 1px solid #00ff99;
-  border-radius: 0.75rem;               // rounded-xl
-  padding: 2rem;                        // p-8
-  position: relative;
-  overflow: hidden;
-  box-shadow:
-    0 10px 15px -3px rgba(0,0,0,0.3),
-    0  4px  6px -2px rgba(0,0,0,0.2);
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
-  animation: gy-fade-up 0.4s ease;
-
-  &:hover {
-    border-color: rgba(0,255,255,0.6);   // hover:border-accent
-    box-shadow:
-      0 20px 40px rgba(0,0,0,0.5),
-      0  0  25px rgba(0,255,153,0.25);
-  }
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
 }
 
-@mixin flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-@mixin flex-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+@mixin glassmorphism { background: var(--bg-card); }
+@mixin glow-border   { border: 1px solid var(--border); }

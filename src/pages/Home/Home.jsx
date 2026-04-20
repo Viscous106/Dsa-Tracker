@@ -1,41 +1,28 @@
+/**
+ * Home.jsx — Hero + Features + Stats
+ * CyberShield layout: full-height hero with two-column grid,
+ * dashboard preview card with SVG grid bg, features section
+ */
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context';
-import { useGame } from '../../context';
-import dsaLevels from '../../data/levels';
+import { useProgress } from '../../hooks';
 
 export default function Home() {
   const { user } = useAuth();
-  const { progress } = useGame();
-  const completedCount = progress.completedLevels.length;
-  const totalLevels = dsaLevels.length;
-  const pct = Math.round((completedCount / totalLevels) * 100);
+  const { progress, completedCount, totalLevels, pct, rank } = useProgress();
 
   const features = [
-    {
-      icon: '⚡',
-      title: 'Instant Mastery',
-      desc: 'Simulate real coding interview scenarios in a risk-free neural environment. Learn by doing, not just reading.',
-      color: 'var(--gy-primary)',
-    },
-    {
-      icon: '🏆',
-      title: 'Gamified Path',
-      desc: '30 levels of increasing complexity. Earn XP, track your progress, and benchmark your DSA IQ.',
-      color: 'var(--gy-secondary)',
-    },
-    {
-      icon: '🛠️',
-      title: 'Advanced Intel',
-      desc: 'Deep technical notes for every algorithm and data structure — always one click away.',
-      color: 'var(--gy-accent)',
-    },
+    { icon: '⚡', title: 'Interactive Missions', desc: 'Solve 30 real DSA interview scenarios with instant feedback, hints, and Intel reports — not just theory.', accent: 'var(--primary)' },
+    { icon: '🏆', title: 'XP & Rank System',    desc: 'Earn XP on every mission. Climb from Recruit → Master as your algorithm skills sharpen.', accent: 'var(--accent)' },
+    { icon: '📖', title: 'Instant Cheat Notes',  desc: 'One-click access to searchable, structured notes for every algorithm and data structure topic.', accent: 'var(--secondary)' },
   ];
 
   return (
     <>
-      {/* ── Hero (CyberShield full-width, two-column) ── */}
+      {/* ═══════════════════════════════════════════
+          HERO
+      ═══════════════════════════════════════════ */}
       <section className="gy-hero-section">
-        {/* Decorative orb blobs */}
         <div className="gy-orb gy-orb--tl" />
         <div className="gy-orb gy-orb--br" />
 
@@ -43,29 +30,31 @@ export default function Home() {
           {/* Left column */}
           <div className="gy-hero-col">
             <div className="gy-hero-eyebrow">
-              <span>✦</span>
-              <span>NEURAL PROTOCOL ACTIVE</span>
+              <span style={{ color: 'var(--primary)' }}>◆</span>
+              <span>NEURAL TRAINING PROTOCOL ACTIVE</span>
             </div>
 
             <h1 className="gy-hero-title">
               <span className="gy-gradient-text">Master the</span>
               <br />
-              <span className="gy-gradient-text">DSA Multiverse</span>
+              <span className="gy-gradient-text">DSA Universe</span>
             </h1>
 
             <p className="gy-hero-sub">
-              The world's most advanced interactive DSA training simulator. Deploy your skills,
-              conquer algorithm missions, and become a legendary code architect.
+              The world's most advanced interactive DSA simulator. Deploy your skills across
+              30 algorithm missions, earn XP, and become a legendary code architect.
             </p>
 
-            {/* Progress bar if started */}
+            {/* Campaign progress bar (only shown once started) */}
             {completedCount > 0 && (
               <div className="gy-hero-progress">
                 <div className="gy-hero-progress__labels">
-                  <span className="gy-muted">Campaign Progress</span>
-                  <span className="gy-mono">{completedCount}/{totalLevels} missions</span>
+                  <span className="gy-muted" style={{ fontSize: '0.8rem' }}>Campaign Progress</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent)', fontSize: '0.8rem' }}>
+                    {completedCount}/{totalLevels} missions · {rank}
+                  </span>
                 </div>
-                <div className="gy-progress">
+                <div className="gy-progress" style={{ marginTop: 0 }}>
                   <div className="gy-progress__fill" style={{ width: `${pct}%` }} />
                 </div>
               </div>
@@ -79,17 +68,28 @@ export default function Home() {
                 📖 Cheat Notes
               </Link>
             </div>
+
+            {/* Trust tags only on first visit */}
+            {completedCount === 0 && (
+              <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+                {['30 Missions', 'XP System', 'Firestore Sync'].map(t => (
+                  <span key={t} style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8rem', color: 'var(--muted-fg)' }}>
+                    <span style={{ color: 'var(--primary)' }}>✓</span> {t}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Right column — Dashboard preview card */}
+          {/* Right column — Dashboard preview */}
           <div className="gy-hero-preview">
             <div className="gy-preview-card">
-              {/* Grid SVG background */}
+              {/* SVG grid background (exact CyberShield pattern) */}
               <div className="gy-preview-grid-bg">
                 <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
                   <defs>
                     <pattern id="pgrid" width="40" height="40" patternUnits="userSpaceOnUse">
-                      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(0,255,153,0.12)" strokeWidth="0.5" />
+                      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(0,255,153,0.10)" strokeWidth="0.5"/>
                     </pattern>
                   </defs>
                   <rect width="100%" height="100%" fill="url(#pgrid)" />
@@ -98,7 +98,7 @@ export default function Home() {
 
               <div className="gy-preview-content">
                 <div className="gy-preview-header">
-                  <h3>Training Dashboard</h3>
+                  <h3>Training Console</h3>
                   <div className="gy-preview-live">
                     <div className="gy-live-dot" />
                     <span>Live</span>
@@ -111,27 +111,27 @@ export default function Home() {
                     <p className="gy-preview-stat__value">{completedCount}</p>
                   </div>
                   <div className="gy-preview-stat gy-preview-stat--cyan">
-                    <p className="gy-preview-stat__label">XP Earned</p>
+                    <p className="gy-preview-stat__label">XP Balance</p>
                     <p className="gy-preview-stat__value">{progress.xp.toLocaleString()}</p>
                   </div>
                 </div>
 
                 {/* Mini bar chart */}
                 <div className="gy-preview-chart">
-                  {[40, 60, 45, 70, 55, 80, 50].map((h, i) => (
+                  {[35, 55, 45, 75, 50, 85, 60].map((h, i) => (
                     <div key={i} className="gy-preview-bar" style={{ height: `${h}%` }} />
                   ))}
                 </div>
 
                 <div className="gy-preview-activity">
-                  <p className="gy-preview-activity__label">Recent Activity</p>
+                  <p className="gy-preview-activity__label">ACTIVITY LOG</p>
                   {[
-                    { text: 'Arrays mastered', color: 'var(--gy-primary)' },
-                    { text: 'Linked Lists completed', color: 'var(--gy-secondary)' },
-                    { text: 'System online', color: 'var(--gy-muted)' },
+                    { text: 'Arrays protocol mastered',   col: 'var(--primary)' },
+                    { text: 'Linked Lists completed',      col: 'var(--accent)' },
+                    { text: 'Neural interface connected',  col: 'var(--muted-fg)' },
                   ].map((item, i) => (
                     <div key={i} className="gy-preview-activity__item">
-                      <span style={{ color: item.color, fontSize: '0.6rem' }}>◆</span>
+                      <span style={{ color: item.col, fontSize: '0.55rem' }}>◆</span>
                       <span>{item.text}</span>
                     </div>
                   ))}
@@ -139,53 +139,57 @@ export default function Home() {
               </div>
             </div>
 
-            {/* XP badge like CyberShield's floating badge */}
+            {/* Floating XP badge */}
             <div className="gy-xp-badge">
               <div className="gy-xp-badge__value">{progress.xp.toLocaleString()}</div>
-              <div className="gy-xp-badge__label">XP Balance</div>
+              <div className="gy-xp-badge__label">XP BALANCE</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Feature Cards (CyberShield Features section pattern) ── */}
+      {/* ═══════════════════════════════════════════
+          FEATURES
+      ═══════════════════════════════════════════ */}
       <section className="gy-features-section">
         <div className="gy-section-center">
           <h2 className="gy-section-title">Core Training Modules</h2>
-          <p className="gy-section-sub">Everything you need to crush DSA interviews</p>
+          <p className="gy-section-sub">
+            Everything you need to crush DSA interviews, in one coherent simulation.
+          </p>
         </div>
-
         <div className="gy-features-grid">
           {features.map((f, i) => (
-            <FeatureCard key={i} {...f} />
+            <div key={i} className="gy-feature-card">
+              <span className="gy-feature-card__icon" style={{ animationDelay: `${i * 0.4}s` }}>
+                {f.icon}
+              </span>
+              <h3 className="gy-feature-card__title" style={{ color: f.accent }}>{f.title}</h3>
+              <p className="gy-feature-card__desc">{f.desc}</p>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* ── Quick Stats (only if started) ── */}
+      {/* ═══════════════════════════════════════════
+          QUICK STATS (only when started)
+      ═══════════════════════════════════════════ */}
       {completedCount > 0 && (
         <section className="gy-stats-section">
           <div className="gy-glass-card">
-            <p className="gy-kicker" style={{ marginBottom: '1.5rem' }}>OPERATIONAL STATS</p>
+            <p className="gy-kicker" style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+              OPERATIONAL STATS · {user?.displayName || user?.email?.split('@')[0]}
+            </p>
             <div className="gy-stats-grid">
               <StatItem value={progress.xp.toLocaleString()} label="XP Earned" />
-              <StatItem value={completedCount} label="Missions Done" />
+              <StatItem value={`${completedCount} / ${totalLevels}`} label="Missions Done" />
               <StatItem value={`${pct}%`} label="Campaign Complete" />
+              <StatItem value={rank} label="Current Rank" />
             </div>
           </div>
         </section>
       )}
     </>
-  );
-}
-
-function FeatureCard({ icon, title, desc, color }) {
-  return (
-    <div className="gy-feature-card">
-      <div className="gy-feature-card__icon" style={{ color }}>{icon}</div>
-      <h3 className="gy-feature-card__title" style={{ color }}>{title}</h3>
-      <p className="gy-feature-card__desc">{desc}</p>
-    </div>
   );
 }
 
