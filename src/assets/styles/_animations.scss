@@ -1,9 +1,31 @@
-@keyframes gy-spin     { to { transform: rotate(360deg); } }
-@keyframes gy-fade-up  { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes gy-fade-in  { from { opacity: 0; } to { opacity: 1; } }
-@keyframes gy-slide-down { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes gy-pulse    { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-@keyframes gy-float    { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-@keyframes gy-bar-grow { from { width: 0; } to { } }
-@keyframes gy-shake    { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-@keyframes gy-shimmer  { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+/* Minimal animations — only functional transitions */
+
+/* Loading spinner */
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Subtle enter — content mount */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+/* Accordion body open */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Mobile menu drop */
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* Wrong-answer shake */
+@keyframes shake {
+  0%, 100% { transform: translateX(0);   }
+  20%, 60%  { transform: translateX(-4px); }
+  40%, 80%  { transform: translateX(4px);  }
+}
+
+/* Progress bar width transition handled via CSS transition, not keyframe */

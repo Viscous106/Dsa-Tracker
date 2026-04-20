@@ -8,7 +8,6 @@
  *  - Controlled form elements (quiz options)
  *  - Conditional rendering (idle / correct / wrong states)
  */
-
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useGame } from '../../context';
@@ -23,18 +22,15 @@ export default function Challenge() {
   const level   = dsaLevels.find((l) => l.id === levelId);
 
   const [selected,            setSelected]            = useState(null);
-  const [status,              setStatus]              = useState('idle'); // 'idle' | 'correct' | 'wrong'
+  const [status,              setStatus]              = useState('idle');
   const [attempts,            setAttempts]            = useState(0);
   const [breakthroughAttempt, setBreakthroughAttempt] = useState(null);
 
   // useRef: DOM reference used to scroll the answer panel to the top
-  // whenever the level changes — without triggering a re-render
   const panelRef = useRef(null);
 
-  // Scroll to top of the questions panel whenever the level ID changes
   useEffect(() => {
     panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    // Reset local state when navigating to a new level
     setSelected(null);
     setStatus('idle');
     setAttempts(0);
@@ -42,17 +38,16 @@ export default function Challenge() {
   }, [levelId]);
 
   if (!level) return (
-    <div className="gy-card" style={{ textAlign: 'center', padding: '3rem' }}>
-      <p style={{ fontSize: '1.2rem' }}>Mission not found.</p>
+    <div className="gy-card" style={{ textAlign: 'center', padding: '48px' }}>
+      <p style={{ fontSize: '16px', fontWeight: 600 }}>Challenge not found.</p>
       <button className="gy-btn" onClick={() => navigate('/challenges')}
-        style={{ marginTop: '1rem' }}>← Back to Campaign</button>
+        style={{ marginTop: '16px' }}>← Back to challenges</button>
     </div>
   );
 
   const alreadyDone = progress.completedLevels.includes(levelId);
 
-  // useCallback: memoises handleSelect so option buttons don't re-render
-  // unnecessarily when unrelated state changes
+  // useCallback: memoises handleSelect
   const handleSelect = useCallback((idx) => {
     if (status !== 'idle') return;
 
@@ -94,11 +89,11 @@ export default function Challenge() {
   return (
     <div>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-        <button className="gy-btn-ghost" onClick={() => navigate('/challenges')}>← Campaign</button>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
+        <button className="gy-btn-ghost" onClick={() => navigate('/challenges')}>← Back</button>
         <div>
-          <span className="gy-kicker">LEVEL {String(level.id).padStart(2, '0')} — {level.concept}</span>
-          <h2 style={{ margin: '0.2rem 0 0', fontWeight: 800 }}>{level.title}</h2>
+          <span className="gy-kicker">#{String(level.id).padStart(2, '0')} · {level.concept}</span>
+          <h2 style={{ margin: '4px 0 0', fontWeight: 700, fontSize: '16px' }}>{level.title}</h2>
         </div>
         <div style={{ marginLeft: 'auto' }}>
           <span className="gy-badge gy-badge--primary">+{level.xpReward} XP</span>
@@ -107,23 +102,25 @@ export default function Challenge() {
 
       <div className="gy-grid gy-grid-2" style={{ alignItems: 'start' }}>
 
-        {/* Left: Questions */}
-        <div ref={panelRef} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        {/* Left: Question panel */}
+        <div ref={panelRef} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div className="gy-card">
-            <p className="gy-kicker" style={{ marginBottom: '0.75rem' }}>MISSION CONTROL</p>
+            <p className="gy-kicker" style={{ marginBottom: '12px' }}>Question</p>
 
             <div style={{
-              background: 'rgba(0,0,0,0.25)', borderRadius: '12px',
-              padding: '1rem', marginBottom: '1rem',
-              borderLeft: '3px solid var(--primary)',
+              background: 'var(--surface)', borderRadius: '4px',
+              padding: '16px', marginBottom: '16px',
+              borderLeft: '3px solid var(--accent)',
             }}>
-              <p style={{ fontSize: '0.78rem', color: 'var(--muted-fg)', fontFamily: 'var(--font-mono)', marginBottom: '0.35rem' }}>
+              <p style={{ fontSize: '11px', color: 'var(--fg-subtle)', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>
                 SCENARIO
               </p>
-              <p style={{ margin: 0, lineHeight: 1.6 }}>{level.scenario}</p>
+              <p style={{ margin: 0, lineHeight: 1.6, fontSize: '13px' }}>{level.scenario}</p>
             </div>
 
-            <h4 style={{ marginBottom: '1rem', lineHeight: 1.5 }}>🎯 {level.question}</h4>
+            <h4 style={{ marginBottom: '16px', lineHeight: 1.5, fontSize: '14px', fontWeight: 600 }}>
+              {level.question}
+            </h4>
 
             <div>
               {level.options.map((opt, idx) => {
@@ -139,7 +136,7 @@ export default function Challenge() {
                   <button key={idx} className={cls}
                     onClick={() => handleSelect(idx)}
                     disabled={status === 'correct'}>
-                    <span style={{ color: 'var(--muted-fg)', marginRight: '0.5rem' }}>
+                    <span style={{ color: 'var(--fg-subtle)', marginRight: '8px' }}>
                       {String.fromCharCode(65 + idx)}.
                     </span>
                     {opt}
@@ -150,23 +147,23 @@ export default function Challenge() {
           </div>
 
           {/* Performance */}
-          <div className="gy-card" style={{ padding: '1rem 1.25rem' }}>
-            <p className="gy-kicker" style={{ marginBottom: '0.75rem' }}>MISSION PERFORMANCE</p>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+          <div className="gy-card" style={{ padding: '16px 20px' }}>
+            <p className="gy-kicker" style={{ marginBottom: '12px' }}>Performance</p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.5rem', fontWeight: 800, color: 'var(--accent)' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '24px', fontWeight: 700, color: 'var(--fg)' }}>
                   {attempts}
                 </div>
-                <div style={{ fontSize: '0.7rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--muted-fg)', fontFamily: 'var(--font-mono)' }}>
-                  Total Trials
+                <div style={{ fontSize: '11px', letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--fg-subtle)', fontWeight: 600 }}>
+                  Attempts
                 </div>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary)' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '24px', fontWeight: 700, color: 'var(--fg)' }}>
                   {breakthroughAttempt ?? '—'}
                 </div>
-                <div style={{ fontSize: '0.7rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--muted-fg)', fontFamily: 'var(--font-mono)' }}>
-                  Success Point
+                <div style={{ fontSize: '11px', letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--fg-subtle)', fontWeight: 600 }}>
+                  Solved on
                 </div>
               </div>
             </div>
@@ -174,83 +171,83 @@ export default function Challenge() {
         </div>
 
         {/* Right: Intel / Result */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {status === 'correct' ? (
             <div className="gy-card" style={{
-              borderColor: 'rgba(0,255,153,0.4)',
-              background: 'rgba(0,255,153,0.04)',
-              textAlign: 'center', padding: '2rem',
+              borderColor: 'rgba(22,163,74,0.40)',
+              background: 'var(--success-dim)',
+              textAlign: 'center', padding: '32px',
             }}>
-              <div style={{ fontSize: '3rem', marginBottom: '0.75rem' }}>🎉</div>
-              <p className="gy-kicker" style={{ color: 'var(--primary)' }}>MISSION SUCCESSFUL</p>
-              <h3 style={{ fontWeight: 800, marginTop: '0.5rem' }}>PROTOCOL VALIDATED</h3>
-              <p className="gy-muted" style={{ fontSize: '0.875rem', margin: '0.5rem 0' }}>
-                Concept Mastered: <strong style={{ color: 'var(--fg)' }}>{level.concept}</strong>
+              <div style={{ fontSize: '32px', marginBottom: '12px' }}>✓</div>
+              <p className="gy-kicker" style={{ color: 'var(--success)' }}>Correct</p>
+              <h3 style={{ fontWeight: 700, fontSize: '16px', marginTop: '8px' }}>Well done</h3>
+              <p className="gy-muted" style={{ fontSize: '13px', margin: '8px 0' }}>
+                Concept: <strong style={{ color: 'var(--fg)' }}>{level.concept}</strong>
               </p>
               {!alreadyDone && (
-                <span className="gy-badge gy-badge--success" style={{ fontSize: '0.85rem' }}>
-                  +{level.xpReward} XP Earned! 🔥
+                <span className="gy-badge gy-badge--success" style={{ fontSize: '11px' }}>
+                  +{level.xpReward} XP earned
                 </span>
               )}
               {alreadyDone && (
-                <span className="gy-badge gy-badge--cyan">Already completed — no extra XP</span>
+                <span className="gy-badge gy-badge--primary">Already solved — no extra XP</span>
               )}
-              <div style={{ marginTop: '1.25rem' }}>
+              <div style={{ marginTop: '20px' }}>
                 <button className="gy-btn" onClick={handleNext}>
-                  {levelId < 30 ? 'Next Mission →' : '🏆 View Campaign'}
+                  {levelId < 30 ? 'Next challenge →' : 'View all challenges'}
                 </button>
               </div>
             </div>
           ) : (
             <div className="gy-card">
-              <p className="gy-kicker" style={{ marginBottom: '0.75rem' }}>MISSION IN PROGRESS</p>
-              <p className="gy-muted" style={{ fontSize: '0.875rem' }}>
-                Deploy the correct answer to earn XP and validate protocol.
+              <p className="gy-kicker" style={{ marginBottom: '12px' }}>Status</p>
+              <p className="gy-muted" style={{ fontSize: '13px' }}>
+                Select the correct answer to earn XP.
               </p>
             </div>
           )}
 
-          {/* Intel Panel */}
+          {/* Concept notes */}
           <div className="gy-card">
-            <p className="gy-kicker" style={{ marginBottom: '1rem' }}>INTEL REPORT — {level.concept}</p>
+            <p className="gy-kicker" style={{ marginBottom: '16px' }}>Concept — {level.concept}</p>
 
-            <div style={{ marginBottom: '1rem' }}>
-              <p style={{ fontSize: '0.72rem', color: 'var(--muted-fg)', fontFamily: 'var(--font-mono)', marginBottom: '0.3rem' }}>// SIMPLE</p>
-              <p style={{ margin: 0, lineHeight: 1.6 }}>{level.intel.simple}</p>
+            <div style={{ marginBottom: '16px' }}>
+              <p style={{ fontSize: '11px', color: 'var(--fg-subtle)', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>EXPLANATION</p>
+              <p style={{ margin: 0, lineHeight: 1.6, fontSize: '13px' }}>{level.intel.simple}</p>
             </div>
 
-            <div style={{ marginBottom: '1rem' }}>
-              <p style={{ fontSize: '0.72rem', color: 'var(--muted-fg)', fontFamily: 'var(--font-mono)', marginBottom: '0.3rem' }}>USAGE</p>
+            <div style={{ marginBottom: '16px' }}>
+              <p style={{ fontSize: '11px', color: 'var(--fg-subtle)', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>USAGE</p>
               <div className="code-block">{level.intel.usage}</div>
             </div>
 
-            <div style={{ marginBottom: '1rem' }}>
-              <p style={{ fontSize: '0.72rem', color: 'var(--muted-fg)', fontFamily: 'var(--font-mono)', marginBottom: '0.3rem' }}>EXAMPLE</p>
-              <p style={{ margin: 0, fontSize: '0.875rem', lineHeight: 1.6, color: 'var(--accent)' }}>
+            <div style={{ marginBottom: '16px' }}>
+              <p style={{ fontSize: '11px', color: 'var(--fg-subtle)', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>EXAMPLE</p>
+              <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.6, color: 'var(--fg-muted)' }}>
                 {level.intel.example}
               </p>
             </div>
 
-            <div style={{ marginBottom: '1rem' }}>
-              <p style={{ fontSize: '0.72rem', color: 'var(--muted-fg)', fontFamily: 'var(--font-mono)', marginBottom: '0.3rem' }}>WHY</p>
-              <p style={{ margin: 0, fontSize: '0.875rem', lineHeight: 1.6 }}>{level.intel.why}</p>
+            <div style={{ marginBottom: '16px' }}>
+              <p style={{ fontSize: '11px', color: 'var(--fg-subtle)', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>WHY</p>
+              <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.6 }}>{level.intel.why}</p>
             </div>
 
             <div>
-              <p style={{ fontSize: '0.72rem', color: 'var(--muted-fg)', fontFamily: 'var(--font-mono)', marginBottom: '0.5rem' }}>
-                3 KEY STEPS
+              <p style={{ fontSize: '11px', color: 'var(--fg-subtle)', fontFamily: 'var(--font-mono)', marginBottom: '8px' }}>
+                KEY STEPS
               </p>
               {level.intel.steps.map((step, i) => (
-                <div key={i} style={{ display: 'flex', gap: '0.65rem', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+                <div key={i} style={{ display: 'flex', gap: '12px', marginBottom: '8px', fontSize: '13px' }}>
                   <span style={{
-                    width: '22px', height: '22px', minWidth: '22px',
-                    background: 'var(--primary)', color: '#0a0015',
-                    borderRadius: '50%', display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0,
+                    width: '20px', height: '20px', minWidth: '20px',
+                    background: 'var(--accent)', color: '#fff',
+                    borderRadius: '4px', display: 'flex', alignItems: 'center',
+                    justifyContent: 'center', fontSize: '11px', fontWeight: 700, flexShrink: 0,
                   }}>
                     {i + 1}
                   </span>
-                  <span style={{ lineHeight: 1.5, paddingTop: '0.1rem' }}>{step}</span>
+                  <span style={{ lineHeight: 1.5, paddingTop: '1px' }}>{step}</span>
                 </div>
               ))}
             </div>

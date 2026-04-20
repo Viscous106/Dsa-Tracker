@@ -1,7 +1,10 @@
+/**
+ * Dashboard.jsx
+ * Clean data layout — no cyber copy, no gradients, no inline glow effects.
+ */
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context';
 import { useProgress } from '../../hooks';
-import dsaLevels from '../../data/levels';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -11,96 +14,78 @@ export default function Dashboard() {
     rank, nextLevel, sessionHistory,
   } = useProgress();
 
+  const name = user?.displayName || user?.email?.split('@')[0] || 'User';
   const greeting = getGreeting();
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
-      {/* ── Hero banner ─────────────────────────────────────── */}
+      {/* ── Welcome banner ─────────────────────────────── */}
       <div style={{
-        position: 'relative', overflow: 'hidden',
-        background: 'linear-gradient(135deg, rgba(0,255,153,0.08), rgba(0,255,255,0.04))',
-        border: '1px solid rgba(0,255,153,0.20)',
-        borderRadius: '1rem', padding: '2rem',
+        background: 'var(--card)',
+        border: '1px solid var(--border)',
+        borderRadius: '6px', padding: '32px',
       }}>
-        {/* Subtle grid bg */}
-        <div style={{ position: 'absolute', inset: 0, opacity: 0.5, pointerEvents: 'none' }}>
-          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="dgrid" width="30" height="30" patternUnits="userSpaceOnUse">
-                <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(0,255,153,0.08)" strokeWidth="0.5"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#dgrid)" />
-          </svg>
-        </div>
-
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <p className="gy-kicker" style={{ marginBottom: '0.4rem' }}>
-            {greeting} — MISSION CONTROL
-          </p>
-          <h1 style={{ fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: 800, marginBottom: '0.4rem' }}>
-            Welcome back,{' '}
-            <span style={{ color: 'var(--primary)' }}>
-              {user?.displayName || user?.email?.split('@')[0]}
-            </span>
-          </h1>
-          <p className="gy-muted" style={{ fontSize: '0.9rem' }}>
-            {completedCount === 0
-              ? 'Deploy your first mission to begin XP accumulation.'
-              : `${completedCount} missions validated · ${rank} · ${pct}% campaign complete`}
-          </p>
-        </div>
+        <p className="gy-kicker" style={{ marginBottom: '8px' }}>
+          {greeting}
+        </p>
+        <h1 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '4px' }}>
+          Welcome back, {name}
+        </h1>
+        <p className="gy-muted" style={{ fontSize: '14px' }}>
+          {completedCount === 0
+            ? 'Start your first challenge to begin tracking progress.'
+            : `${completedCount} solved · ${rank} · ${pct}% complete`}
+        </p>
       </div>
 
-      {/* ── Stats row ─────────────────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1rem' }}>
-        <StatCard value={progress.xp.toLocaleString()} label="XP Balance"        color="var(--primary)"   icon="⚡" />
-        <StatCard value={`${completedCount}/${totalLevels}`} label="Missions Done" color="var(--accent)"    icon="✅" />
-        <StatCard value={`Lv. ${currentLevel}`}             label="XP Level"      color="var(--secondary)" icon="🏅" />
-        <StatCard value={rank}                              label="Rank"           color="var(--primary)"   icon="👑" hideFont />
+      {/* ── Stats row ─────────────────────────────────── */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '16px' }}>
+        <Stat icon="⚡" value={progress.xp.toLocaleString()} label="Total XP" />
+        <Stat icon="✅" value={`${completedCount}/${totalLevels}`} label="Solved" />
+        <Stat icon="📊" value={`Lv. ${currentLevel}`} label="Level" />
+        <Stat icon="🏅" value={rank} label="Rank" isText />
       </div>
 
-      {/* ── Two-column mid section ──────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+      {/* ── Two-column: next challenge + XP progress ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
 
-        {/* Next mission */}
-        <div className="gy-glass-card">
-          <p className="gy-kicker" style={{ marginBottom: '1rem' }}>NEXT OBJECTIVE</p>
+        {/* Next challenge */}
+        <div className="gy-card">
+          <p className="gy-kicker" style={{ marginBottom: '16px' }}>Next challenge</p>
           {nextLevel ? (
             <>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--muted-fg)' }}>
-                  MISSION {String(nextLevel.id).padStart(2, '0')}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--fg-subtle)' }}>
+                  #{String(nextLevel.id).padStart(2, '0')}
                 </span>
                 <span className="gy-badge gy-badge--primary">+{nextLevel.xpReward} XP</span>
               </div>
-              <h3 style={{ fontWeight: 800, fontSize: '1.05rem', marginBottom: '0.5rem' }}>
+              <h3 style={{ fontWeight: 600, fontSize: '14px', marginBottom: '8px' }}>
                 {nextLevel.title}
               </h3>
-              <p className="gy-muted" style={{ fontSize: '0.82rem', lineHeight: 1.55, marginBottom: '1.25rem' }}>
+              <p className="gy-muted" style={{ fontSize: '13px', lineHeight: 1.6, marginBottom: '20px' }}>
                 {nextLevel.scenario}
               </p>
-              <Link className="gy-btn" to={`/challenge/${nextLevel.id}`}
-                style={{ fontSize: '0.8rem', padding: '0.6rem 1.2rem' }}>
-                Deploy Mission →
+              <Link className="gy-btn" to={`/challenge/${nextLevel.id}`}>
+                Start →
               </Link>
             </>
           ) : (
-            <div style={{ textAlign: 'center', padding: '1rem 0' }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🎉</div>
-              <p style={{ fontWeight: 700, color: 'var(--primary)' }}>All {totalLevels} Missions Complete!</p>
-              <p className="gy-muted" style={{ fontSize: '0.875rem', marginTop: '0.35rem' }}>You have achieved DSA Mastery</p>
+            <div style={{ textAlign: 'center', padding: '16px 0' }}>
+              <div style={{ fontSize: '32px', marginBottom: '8px' }}>🎉</div>
+              <p style={{ fontWeight: 600 }}>All {totalLevels} challenges complete</p>
+              <p className="gy-muted" style={{ fontSize: '13px', marginTop: '4px' }}>You've reached mastery.</p>
             </div>
           )}
         </div>
 
-        {/* XP level progress */}
-        <div className="gy-glass-card">
-          <p className="gy-kicker" style={{ marginBottom: '1rem' }}>XP PROGRESS</p>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '0.4rem' }}>
+        {/* XP progress */}
+        <div className="gy-card">
+          <p className="gy-kicker" style={{ marginBottom: '16px' }}>XP progress</p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '8px' }}>
             <span className="gy-muted">Level {currentLevel}</span>
-            <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent)' }}>
+            <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--fg-muted)' }}>
               {xpToNext} XP to next
             </span>
           </div>
@@ -108,73 +93,68 @@ export default function Dashboard() {
             <div className="gy-progress__fill" style={{ width: `${xpIntoLevel}%` }} />
           </div>
 
-          <div style={{ margin: '1.25rem 0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-            <MiniStat label="Total XP"     value={progress.xp} color="var(--primary)" />
-            <MiniStat label="Campaign"     value={`${pct}%`}  color="var(--accent)" />
+          <div style={{ margin: '20px 0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <MiniStat label="Total XP" value={progress.xp} />
+            <MiniStat label="Campaign" value={`${pct}%`} />
           </div>
 
-          <div className="gy-progress" style={{ marginTop: 0 }}>
-            <div className="gy-progress__fill" style={{ width: `${pct}%`, background: 'linear-gradient(to right, var(--accent), var(--secondary))' }} />
+          <div className="gy-progress">
+            <div className="gy-progress__fill" style={{ width: `${pct}%` }} />
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', marginTop: '0.3rem' }}>
-            <span className="gy-muted">0%</span>
-            <span className="gy-muted">Campaign {pct}%</span>
-            <span className="gy-muted">100%</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginTop: '4px', color: 'var(--fg-subtle)' }}>
+            <span>0%</span>
+            <span>{pct}% complete</span>
+            <span>100%</span>
           </div>
         </div>
       </div>
 
-      {/* ── Session history ──────────────────────────────────── */}
-      <div className="gy-glass-card">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
-          <p className="gy-kicker">SESSION HISTORY</p>
-          <Link to="/challenges" style={{ fontSize: '0.8rem', color: 'var(--accent)', fontWeight: 600 }}>
-            View All →
+      {/* ── Session history ─────────────────────────── */}
+      <div className="gy-card">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+          <p className="gy-kicker">Recent activity</p>
+          <Link to="/challenges" className="gy-link" style={{ fontSize: '13px' }}>
+            View all →
           </Link>
         </div>
 
         {sessionHistory.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '2rem 0', color: 'var(--muted-fg)', fontSize: '0.875rem' }}>
-            <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📡</div>
-            No session data yet. Deploy to the arena to begin neural mapping.
+          <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--fg-muted)', fontSize: '13px' }}>
+            No activity yet. Complete a challenge to see it here.
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {sessionHistory.map((item) => (
-              <Link key={item.id} to={`/challenge/${item.id}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+              <Link key={item.id} to={`/challenge/${item.id}`} style={{ color: 'inherit' }}>
                 <div style={{
-                  display: 'flex', alignItems: 'center', gap: '1rem',
-                  background: 'rgba(0,255,153,0.03)', border: '1px solid rgba(0,255,153,0.12)',
-                  borderRadius: '12px', padding: '0.875rem 1rem',
-                  transition: 'border-color 0.2s, background 0.2s',
-                  cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', gap: '16px',
+                  background: 'var(--surface)', border: '1px solid var(--border-subtle)',
+                  borderRadius: '4px', padding: '12px 16px',
+                  transition: 'border-color 0.1s',
                 }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(0,255,153,0.35)'; e.currentTarget.style.background = 'rgba(0,255,153,0.06)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(0,255,153,0.12)'; e.currentTarget.style.background = 'rgba(0,255,153,0.03)'; }}
+                  onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border)'}
+                  onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-subtle)'}
                 >
-                  {/* Level badge */}
                   <div style={{
-                    width: '42px', height: '42px', borderRadius: '10px', flexShrink: 0,
-                    background: 'linear-gradient(135deg, rgba(0,255,153,0.15), rgba(0,255,255,0.08))',
-                    border: '1px solid rgba(0,255,153,0.25)',
+                    width: '36px', height: '36px', borderRadius: '4px', flexShrink: 0,
+                    background: 'var(--card-hover)',
+                    border: '1px solid var(--border)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontFamily: 'var(--font-mono)', fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary)',
+                    fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 600, color: 'var(--fg-muted)',
                   }}>
-                    L{String(item.id).padStart(2, '0')}
+                    {String(item.id).padStart(2, '0')}
                   </div>
 
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontWeight: 700, fontSize: '0.9rem', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <p style={{ fontWeight: 600, fontSize: '13px', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {item.title}
                     </p>
-                    <p className="gy-muted" style={{ fontSize: '0.75rem', margin: '0.1rem 0 0' }}>
-                      {item.concept} · Breakthrough #{item.breakthroughAttempt}
+                    <p className="gy-muted" style={{ fontSize: '11px', margin: '2px 0 0' }}>
+                      {item.concept} · attempt #{item.breakthroughAttempt}
                     </p>
                   </div>
 
-                  <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                    <span className="gy-badge gy-badge--primary">+{item.xpReward} XP</span>
-                  </div>
+                  <span className="gy-badge gy-badge--primary">+{item.xpReward} XP</span>
                 </div>
               </Link>
             ))}
@@ -185,37 +165,44 @@ export default function Dashboard() {
   );
 }
 
-function StatCard({ value, label, color, icon, hideFont }) {
+function Stat({ value, label, icon, isText }) {
   return (
-    <div className="gy-glass-card" style={{ textAlign: 'center', padding: '1.25rem 1rem' }}>
-      <div style={{ fontSize: '1.75rem', marginBottom: '0.4rem' }}>{icon}</div>
+    <div className="gy-card" style={{ textAlign: 'center', padding: '20px 16px' }}>
+      <div style={{ fontSize: '20px', marginBottom: '8px' }}>{icon}</div>
       <div style={{
-        fontFamily: hideFont ? 'inherit' : 'var(--font-mono)',
-        fontSize: hideFont ? '0.95rem' : '1.5rem',
-        fontWeight: 800, color,
-        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+        fontFamily: isText ? 'var(--font-sans)' : 'var(--font-mono)',
+        fontSize: isText ? '14px' : '24px',
+        fontWeight: 700, color: 'var(--fg)',
+        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
       }}>
         {value}
       </div>
-      <div style={{ fontSize: '0.66rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted-fg)', fontFamily: 'var(--font-mono)', marginTop: '0.2rem' }}>
+      <div style={{
+        fontSize: '11px', letterSpacing: '0.08em', textTransform: 'uppercase',
+        color: 'var(--fg-subtle)', fontWeight: 600, marginTop: '4px',
+      }}>
         {label}
       </div>
     </div>
   );
 }
 
-function MiniStat({ label, value, color }) {
+function MiniStat({ label, value }) {
   return (
-    <div style={{ textAlign: 'center', padding: '0.75rem', background: 'rgba(0,0,0,0.2)', borderRadius: '10px', border: '1px solid rgba(100,100,100,0.15)' }}>
-      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 800, color }}>{value}</div>
-      <div style={{ fontSize: '0.65rem', color: 'var(--muted-fg)', textTransform: 'uppercase', letterSpacing: '0.08em', marginTop: '0.15rem' }}>{label}</div>
+    <div style={{
+      textAlign: 'center', padding: '12px',
+      background: 'var(--surface)', borderRadius: '4px',
+      border: '1px solid var(--border-subtle)',
+    }}>
+      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '20px', fontWeight: 700, color: 'var(--fg)' }}>{value}</div>
+      <div style={{ fontSize: '11px', color: 'var(--fg-subtle)', textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: '4px', fontWeight: 600 }}>{label}</div>
     </div>
   );
 }
 
 function getGreeting() {
   const h = new Date().getHours();
-  if (h < 12) return '🌅 GOOD MORNING';
-  if (h < 17) return '☀️ GOOD AFTERNOON';
-  return '🌙 GOOD EVENING';
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  return 'Good evening';
 }

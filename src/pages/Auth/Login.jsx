@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { Navigate, Link } from 'react-router-dom';
+import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context';
-import { useNavigate } from 'react-router-dom';
 
-// Google icon SVG (official brand colors)
 function GoogleIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
@@ -57,27 +55,24 @@ export default function Login() {
   };
 
   const perks = [
-    '30 curated DSA algorithm missions',
+    '30 curated DSA challenges',
     'XP-based progress tracking',
-    'Instant intel notes per concept',
-    'Gamified rank system',
-    'Cheat notes for every topic',
+    'Concept notes per topic',
+    'Rank progression system',
+    'Searchable cheat notes',
     'Real interview-style questions',
   ];
 
   return (
     <div className="gy-auth-full">
-      <div className="gy-orb gy-orb--tl" />
-      <div className="gy-orb gy-orb--br" />
-
       <div className="gy-auth-header">
-        <h1>Sign In to <span style={{ color: 'var(--accent)' }}>DSA Veda</span></h1>
-        <p>Get started with your algorithm training in seconds</p>
+        <h1>Sign in to DSA Veda</h1>
+        <p>Pick up where you left off.</p>
       </div>
 
       <div className="gy-auth-layout">
         <aside className="gy-auth-sidebar">
-          <h3 className="gy-auth-sidebar__title">What You Get</h3>
+          <h3 className="gy-auth-sidebar__title">What you get</h3>
           <ul className="gy-auth-sidebar__list">
             {perks.map((perk, i) => (
               <li key={i} className="gy-auth-sidebar__item">
@@ -89,50 +84,41 @@ export default function Login() {
         </aside>
 
         <div className="gy-auth-form-panel">
-          <p className="gy-kicker" style={{ marginBottom: '0.5rem' }}>NEURAL INTERFACE</p>
-          <h2 className="gy-auth-form-title">Welcome Back</h2>
-          <p className="gy-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-            Sign in to continue your training mission.
+          <h2 className="gy-auth-form-title">Welcome back</h2>
+          <p className="gy-muted" style={{ marginBottom: '24px', fontSize: '13px' }}>
+            Sign in to continue.
           </p>
 
           {error && <div className="gy-alert gy-alert--error">{error}</div>}
 
-          {/* ── Google Sign-In ── */}
+          {/* Google sign-in */}
           <button
             onClick={handleGoogle}
             disabled={gLoading}
+            className="gy-btn-ghost"
             style={{
               width: '100%',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem',
-              background: 'rgba(255,255,255,0.07)',
-              border: '2px solid rgba(255,255,255,0.15)',
-              borderRadius: '9999px',
-              color: '#fff',
-              fontFamily: 'inherit',
-              fontSize: '0.9rem', fontWeight: 600,
-              padding: '0.7rem 1.5rem',
-              cursor: 'pointer',
-              marginBottom: '1.25rem',
-              transition: 'background 0.2s, border-color 0.2s',
+              justifyContent: 'center',
+              gap: '12px',
+              height: '40px',
+              marginBottom: '20px',
             }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.13)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.07)'}
           >
             <GoogleIcon />
             {gLoading ? 'Connecting…' : 'Continue with Google'}
           </button>
 
           {/* Divider */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
-            <div style={{ flex: 1, height: '1px', background: 'rgba(0,255,153,0.12)' }} />
-            <span style={{ fontSize: '0.75rem', color: 'var(--muted-fg)', fontFamily: 'var(--font-mono)' }}>OR</span>
-            <div style={{ flex: 1, height: '1px', background: 'rgba(0,255,153,0.12)' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+            <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
+            <span style={{ fontSize: '11px', color: 'var(--fg-subtle)', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>or</span>
+            <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
           </div>
 
-          {/* ── Email / Password form ── */}
+          {/* Email / password form */}
           <form onSubmit={handleSubmit}>
             <div className="gy-field">
-              <label htmlFor="login-email">Email Address</label>
+              <label htmlFor="login-email">Email</label>
               <input id="login-email" className="gy-input" type="email"
                 placeholder="you@example.com" value={email}
                 onChange={e => setEmail(e.target.value)} required />
@@ -144,17 +130,19 @@ export default function Login() {
                 onChange={e => setPassword(e.target.value)} required />
             </div>
             <button className="gy-btn" type="submit" disabled={loading}
-              style={{ width: '100%', marginTop: '0.5rem' }}>
-              {loading ? 'Authenticating…' : 'Access Nexus →'}
+              style={{ width: '100%', height: '36px', marginTop: '8px' }}>
+              {loading ? 'Signing in…' : 'Sign in'}
             </button>
           </form>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.25rem', fontSize: '0.875rem' }}>
-            <span style={{ color: 'var(--muted-fg)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px', fontSize: '13px' }}>
+            <span style={{ color: 'var(--fg-muted)' }}>
               No account?{' '}
-              <Link to="/auth/signup" style={{ color: 'var(--accent)', fontWeight: 600 }}>Sign Up</Link>
+              <Link to="/auth/signup" className="gy-link">Sign up</Link>
             </span>
-            <Link to="/auth/forgot-password" style={{ color: 'var(--muted-fg)' }}>Forgot password?</Link>
+            <Link to="/auth/forgot-password" style={{ color: 'var(--fg-muted)', fontSize: '13px' }}>
+              Forgot password?
+            </Link>
           </div>
         </div>
       </div>
@@ -162,7 +150,6 @@ export default function Login() {
   );
 }
 
-// Human-readable Firebase error messages
 function friendlyError(code) {
   const map = {
     'auth/user-not-found':       'No account found with this email.',

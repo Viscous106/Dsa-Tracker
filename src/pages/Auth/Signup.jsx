@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Navigate, Link } from 'react-router-dom';
+import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context';
-import { useNavigate } from 'react-router-dom';
 
 function GoogleIcon() {
   return (
@@ -60,29 +59,26 @@ export default function Signup() {
   };
 
   const perks = [
-    '30 curated DSA algorithm missions',
+    '30 curated DSA challenges',
     'XP-based progress tracking',
-    'Instant intel notes per concept',
-    'Gamified rank system',
-    'Cheat notes for every topic',
+    'Concept notes per topic',
+    'Rank progression system',
+    'Searchable cheat notes',
     'Real interview-style questions',
   ];
 
   return (
     <div className="gy-auth-full">
-      <div className="gy-orb gy-orb--tl" />
-      <div className="gy-orb gy-orb--br" />
-
       {!done && (
         <div className="gy-auth-header">
-          <h1>Join <span style={{ color: 'var(--accent)' }}>DSA Veda</span></h1>
-          <p>Get started with enterprise-grade DSA training in minutes</p>
+          <h1>Create your account</h1>
+          <p>Start practicing DSA in minutes.</p>
         </div>
       )}
 
       <div className="gy-auth-layout">
         <aside className="gy-auth-sidebar">
-          <h3 className="gy-auth-sidebar__title">What You Get</h3>
+          <h3 className="gy-auth-sidebar__title">What you get</h3>
           <ul className="gy-auth-sidebar__list">
             {perks.map((perk, i) => (
               <li key={i} className="gy-auth-sidebar__item">
@@ -95,65 +91,57 @@ export default function Signup() {
 
         <div className="gy-auth-form-panel">
           {done ? (
-            <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+            <div style={{ textAlign: 'center', padding: '32px 0' }}>
               <div className="gy-success-icon">✓</div>
-              <h2 style={{ color: 'var(--accent)', fontSize: '1.75rem', fontWeight: 700, marginBottom: '.75rem' }}>
-                Welcome Aboard!
+              <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '8px' }}>
+                Account created
               </h2>
-              <p className="gy-muted" style={{ fontSize: '1.05rem' }}>
-                Profile created. Entering the Nexus…
+              <p className="gy-muted" style={{ fontSize: '13px' }}>
+                Redirecting to dashboard…
               </p>
             </div>
           ) : (
             <>
-              <p className="gy-kicker" style={{ marginBottom: '0.5rem' }}>INITIALIZE NEURAL PROFILE</p>
-              <h2 className="gy-auth-form-title">Create Account</h2>
-              <p className="gy-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-                Join DSA Veda and start your training mission.
+              <h2 className="gy-auth-form-title">Sign up</h2>
+              <p className="gy-muted" style={{ marginBottom: '24px', fontSize: '13px' }}>
+                Create an account to track your progress.
               </p>
 
               {error && <div className="gy-alert gy-alert--error">{error}</div>}
 
-              {/* ── Google Sign-Up ── */}
+              {/* Google sign-up */}
               <button
                 onClick={handleGoogle}
                 disabled={gLoading}
+                className="gy-btn-ghost"
                 style={{
                   width: '100%',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem',
-                  background: 'rgba(255,255,255,0.07)',
-                  border: '2px solid rgba(255,255,255,0.15)',
-                  borderRadius: '9999px',
-                  color: '#fff',
-                  fontFamily: 'inherit',
-                  fontSize: '0.9rem', fontWeight: 600,
-                  padding: '0.7rem 1.5rem',
-                  cursor: 'pointer',
-                  marginBottom: '1.25rem',
-                  transition: 'background 0.2s, border-color 0.2s',
+                  justifyContent: 'center',
+                  gap: '12px',
+                  height: '40px',
+                  marginBottom: '20px',
                 }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.13)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.07)'}
               >
                 <GoogleIcon />
                 {gLoading ? 'Connecting…' : 'Sign up with Google'}
               </button>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
-                <div style={{ flex: 1, height: '1px', background: 'rgba(0,255,153,0.12)' }} />
-                <span style={{ fontSize: '0.75rem', color: 'var(--muted-fg)', fontFamily: 'var(--font-mono)' }}>OR</span>
-                <div style={{ flex: 1, height: '1px', background: 'rgba(0,255,153,0.12)' }} />
+              {/* Divider */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
+                <span style={{ fontSize: '11px', color: 'var(--fg-subtle)', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>or</span>
+                <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
               </div>
 
               <form onSubmit={handleSubmit}>
                 <div className="gy-field">
-                  <label htmlFor="su-name">Display Name</label>
+                  <label htmlFor="su-name">Name</label>
                   <input id="su-name" className="gy-input" type="text"
                     placeholder="Your name" value={name}
                     onChange={e => setName(e.target.value)} required />
                 </div>
                 <div className="gy-field">
-                  <label htmlFor="su-email">Email Address</label>
+                  <label htmlFor="su-email">Email</label>
                   <input id="su-email" className="gy-input" type="email"
                     placeholder="you@example.com" value={email}
                     onChange={e => setEmail(e.target.value)} required />
@@ -166,14 +154,14 @@ export default function Signup() {
                   <span>Must be at least 6 characters</span>
                 </div>
                 <button className="gy-btn" type="submit" disabled={loading}
-                  style={{ width: '100%', marginTop: '0.5rem' }}>
-                  {loading ? 'Creating Profile…' : 'Join the Nexus →'}
+                  style={{ width: '100%', height: '36px', marginTop: '8px' }}>
+                  {loading ? 'Creating account…' : 'Create account'}
                 </button>
               </form>
 
-              <p style={{ textAlign: 'center', fontSize: '.875rem', color: 'var(--muted-fg)', marginTop: '1.25rem' }}>
+              <p style={{ textAlign: 'center', fontSize: '13px', color: 'var(--fg-muted)', marginTop: '20px' }}>
                 Already have an account?{' '}
-                <Link to="/auth/login" style={{ color: 'var(--accent)', fontWeight: 600 }}>Sign In</Link>
+                <Link to="/auth/login" className="gy-link">Sign in</Link>
               </p>
             </>
           )}
