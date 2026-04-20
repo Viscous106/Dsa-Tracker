@@ -25,6 +25,9 @@ export function userProgressReducer(state, action) {
         lastActiveDate: new Date().toDateString(),
       };
     }
+    case 'HYDRATE':
+      // Replace entire state with Firestore data (called on login)
+      return { ...initialDsaProgress, ...action.payload };
     case 'RESET':
       return initialDsaProgress;
     default:
